@@ -1,0 +1,33 @@
+** Модели
+User
+
+Category
+-name
+
+Product
+-category
+-name
+-price
+-in_stock
+
+Comment
+-user
+-product
+-text
+
+Tag
+-name
+
+ProductTag (m2m)
+-product
+-tag
+
+Order
+user
+status
+
+OrderItem
+product
+price
+quantity
+sum
