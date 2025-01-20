@@ -1,5 +1,5 @@
 ** Модели
-User
+User (AbstractUser)
 
 Category
 -name
@@ -9,6 +9,7 @@ Product
 -name
 -price
 -in_stock
+-image
 
 Comment
 -user
@@ -23,8 +24,9 @@ ProductTag (m2m)
 -tag
 
 Order
-user
-status
+-user
+-status
+-products (m2m with through=OrderItem)
 
 OrderItem
 product
