@@ -58,8 +58,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "shop_api.apps.ShopApiConfig",
     "rest_framework",
+    "shop_api.apps.ShopApiConfig",
 ]
 
 MIDDLEWARE = [
