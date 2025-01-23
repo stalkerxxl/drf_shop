@@ -44,6 +44,10 @@ REST_FRAMEWORK = {
     # ]
 }
 
+SUPERUSER_USERNAME = env("SUPERUSER_USERNAME", cast=str)
+SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD", cast=str)
+SUPERUSER_EMAIL = env("SUPERUSER_EMAIL", cast=str)
+
 ALLOWED_HOSTS = []
 
 # Application definition

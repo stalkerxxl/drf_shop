@@ -2,7 +2,8 @@ import random
 
 from django.core.management.base import BaseCommand
 
-from shop_api.models import Category, Product, Tag
+from core.settings import SUPERUSER_EMAIL, SUPERUSER_USERNAME, SUPERUSER_PASSWORD
+from shop_api.models import Category, Product, Tag, User
 
 
 class Command(BaseCommand):
@@ -25,6 +26,7 @@ class Command(BaseCommand):
         """
         Main entry point for the command. Clears the database and populates it with fake data.
         """
+        self.create_superuser()
         self.clear_database()
         self.create_categories()
         self.create_tags()
@@ -73,6 +75,18 @@ class Command(BaseCommand):
         for product in random.sample(self.products, 10):
             tags = random.sample(self.tags, random.randint(1, 2))
             product.tags.set(tags)
+
+    @staticmethod
+    def create_superuser():
+        """
+        Create a superuser with predefined credentials.
+        """
+        if not User.objects.filter(username="root").exists():
+            User.objects.create_superuser(
+                username=SUPERUSER_USERNAME,
+                email=SUPERUSER_EMAIL,
+                password=SUPERUSER_PASSWORD,
+            )
 
     @staticmethod
     def clear_database():
