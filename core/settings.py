@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+
 from environ import Env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,6 +36,14 @@ LOGGING = {
     # },
 }
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    # ]
+}
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -46,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "shop_api.apps.ShopApiConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
