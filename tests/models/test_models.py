@@ -24,3 +24,12 @@ class TestCategoryModel:
         with pytest.raises(ValidationError):
             category = Category(name="")
             category.full_clean()
+
+    def test_category_name_max_length(self):
+        long_name = "a" * 101
+        with pytest.raises(ValidationError):
+            category = Category(name=long_name)
+            category.full_clean()
+
+    def test_category_str_method(self, test_category):
+        assert str(test_category) == "Test Category"
