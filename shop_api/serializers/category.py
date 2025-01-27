@@ -15,9 +15,3 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     @staticmethod
     def get_product_count(obj):
         return Product.objects.filter(category=obj).count()
-
-
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = "__all__"
