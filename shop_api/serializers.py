@@ -3,22 +3,21 @@ from rest_framework import serializers
 from shop_api.models import Category, Product
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Category model.
-    Converts Category model instances to JSON format and vice versa.
-    """
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
+    product_count = serializers.SerializerMethodField()
 
+    # noinspection PyUnresolvedReferences
     class Meta:
-        """
-        Meta class to specify the model and fields to be used in the serializer.
-        """
-
         model = Category
-        fields = "__all__"
+        fields = ["url", "id", "name", "created_at", "updated_at", "product_count"]
+        extra_kwargs = {"url": {"view_name": "category-detail", "lookup_field": "pk"}}
+
+    @staticmethod
+    def get_product_count(obj):
+        return Product.objects.filter(category=obj).count()
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = "__all__"
