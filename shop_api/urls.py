@@ -8,7 +8,7 @@ from shop_api.views import (
 )
 
 router = DefaultRouter()
-router.register(r"categories", CategoryViewSet)
+router.register(r"categories", CategoryViewSet, basename="category")
 
 urlpatterns = [
     path("", include(router.urls)),
