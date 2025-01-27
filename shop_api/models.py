@@ -32,7 +32,17 @@ class Tag(TimestampMixin, models.Model):
         return self.name
 
 
+class ProductManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def active(self):
+        return self.get_queryset().filter(is_active=True)
+
+
 class Product(TimestampMixin, models.Model):
+    objects = ProductManager()
+
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(max_length=500, blank=False)
     price = models.DecimalField(
