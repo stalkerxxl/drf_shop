@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from shop_api.models import Tag
 from shop_api.permissions import IsAdminOrReadOnly
-from shop_api.serializers.tag import TagSerializer
+from shop_api.serializers import TagSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):
