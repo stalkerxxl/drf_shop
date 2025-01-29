@@ -11,4 +11,9 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
     # filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+    search_fields = ["name"]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
