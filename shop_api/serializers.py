@@ -19,11 +19,26 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
     product_count = serializers.SerializerMethodField()
+    products = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name="product-detail",
+        lookup_field="pk",
+        source="product_set",
+    )
 
     # noinspection PyUnresolvedReferences
     class Meta:
         model = Tag
-        fields = ["url", "id", "name", "created_at", "updated_at", "product_count"]
+        fields = [
+            "url",
+            "id",
+            "name",
+            "created_at",
+            "updated_at",
+            "product_count",
+            "products",
+        ]
         extra_kwargs = {"url": {"view_name": "tag-detail", "lookup_field": "pk"}}
 
     def get_product_count(self, obj: Tag):
