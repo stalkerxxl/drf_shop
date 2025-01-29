@@ -12,7 +12,7 @@ UserViewSet
     - фильтрация
     - поиск
     - сортировка
-TagViewSet
+✅ TagViewSet
 
 ==АУТЕНТИФИКАЦИЯ==
 ✅ по паролю
@@ -22,7 +22,7 @@ TagViewSet
 User
 ✅ Category
 ✅ Product
-Tag
+✅ Tag
 
 ==SWAGGER==
 -User
