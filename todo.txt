@@ -1,10 +1,38 @@
-ПЛАН ЗАДАЧ:
-- тесты для моделей
-- тесты для вьюх
-- аутентификация (через браузер и по токену)
+==МОДЕЛИ==
+✅ User
+✅ Category
+✅ Product
+✅ Tag
+
+==ВЬЮХИ==
+UserViewSet
+✅ CategoryViewSet
+✅ ProductGenericView
+    ✅ пагинация
+    - фильтрация
+    - поиск
+    - сортировка
+✅ TagViewSet
+
+==АУТЕНТИФИКАЦИЯ==
+✅ по паролю
+- по токену
+
+==ТЕСТЫ==
+User
+✅ Category
+✅ Product
+✅ Tag
+
+==SWAGGER==
+-User
+-Category
+-Product
+-Tag
 
 
-** МОДЕЛИ **
+
+************* МОДЕЛИ *************
 User (AbstractUser)
 
 Category
