@@ -6,9 +6,11 @@ from shop_api.views import (
     ProductListCreateAPIView,
     ProductDetailAPIView,
 )
+from shop_api.views.tag import TagViewSet
 
 router = DefaultRouter()
 router.register(r"categories", CategoryViewSet, basename="category")
+router.register(r"tags", TagViewSet, basename="tag")
 
 urlpatterns = [
     path("", include(router.urls)),
