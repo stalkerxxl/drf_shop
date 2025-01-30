@@ -53,7 +53,7 @@ class Product(TimestampMixin, models.Model):
     is_active = models.BooleanField(default=False)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name="product_set")
 
     def __str__(self):
         return self.name
