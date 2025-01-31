@@ -1,0 +1,9 @@
+###
+GET http://localhost:8000/api/categories/
+
+<> 2025-01-31T145446.200.json
+
+###
+GET http://localhost:8000/api/categories/32/products/
+
+<> 2025-01-31T145451.200.json

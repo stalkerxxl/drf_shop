@@ -42,7 +42,8 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # tags = TagSerializer(many=True, read_only=True)
+    category_name = serializers.SerializerMethodField()
+    category_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -54,5 +55,14 @@ class ProductSerializer(serializers.ModelSerializer):
             "in_stock",
             # "image",
             "is_active",
-            "category",
+            "category_id",
+            "category_name",
         )
+
+    @staticmethod
+    def get_category_id(obj: Product):
+        return obj.category.id
+
+    @staticmethod
+    def get_category_name(obj: Product):
+        return obj.category.name
