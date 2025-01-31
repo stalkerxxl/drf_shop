@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 
 from shop_api.models import Category
-from shop_api.paginators import CategoryProductsPagination
+from shop_api.paginators import ProductsPagination
 from shop_api.serializers import CategorySerializer, ProductSerializer
 
 
@@ -19,7 +19,7 @@ class CategoryDetailAPIView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         category: Category = self.get_object()
         products = category.product_set.all()
-        paginator = CategoryProductsPagination()
+        paginator = ProductsPagination()
         page = paginator.paginate_queryset(products, request)
         product_serializer = ProductSerializer(page, many=True)
 
