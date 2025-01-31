@@ -1,17 +1,25 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 
-from shop_api.models import Category
-from shop_api.permissions import IsAdminOrReadOnly
-from shop_api.serializers import CategorySerializer
+from shop_api.models import Category, Product
+from shop_api.serializers import CategorySerializer, ProductSerializer
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for the Category model.
-    """
-
+class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
     pagination_class = None
+
+
+class CategoryProductsPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+
+
+class CategoryProductsAPIView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    pagination_class = CategoryProductsPagination
+
+    def get_queryset(self):
+        category_id = self.kwargs.get("pk")
+        return Product.objects.filter(category_id=category_id)
