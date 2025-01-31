@@ -4,15 +4,13 @@ from shop_api.views import (
     ProductListCreateAPIView,
     ProductDetailAPIView,
     CategoryListAPIView,
-    CategoryProductsAPIView,
+    CategoryDetailAPIView,
 )
 
 urlpatterns = [
     path("categories/", CategoryListAPIView.as_view(), name="categories-list"),
     path(
-        "category/<int:pk>/products/",
-        CategoryProductsAPIView.as_view(),
-        name="category-products",
+        "categories/<int:pk>/", CategoryDetailAPIView.as_view(), name="category-detail"
     ),
     path("products/", ProductListCreateAPIView.as_view(), name="product-list-create"),
     path("products/<int:pk>/", ProductDetailAPIView.as_view(), name="product-detail"),
