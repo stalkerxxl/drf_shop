@@ -3,18 +3,25 @@ from rest_framework.response import Response
 
 from shop_api.models import Category
 from shop_api.paginators import ProductsPagination
+from shop_api.permissions import IsAdminOrReadOnly
 from shop_api.serializers import CategorySerializer, ProductSerializer
 
 
-class CategoryListAPIView(generics.ListAPIView):
+class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = None
+    permission_classes = [IsAdminOrReadOnly]
 
 
-class CategoryDetailAPIView(generics.RetrieveAPIView):
-    queryset = Category.objects.prefetch_related("product_set")
+class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        if self.request.method == "GET":
+            return Category.objects.prefetch_related("product_set")
+        return Category.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
         category: Category = self.get_object()
