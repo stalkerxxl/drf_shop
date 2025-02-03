@@ -1,11 +1,13 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from shop_api.views import (
     ProductListCreateAPIView,
     ProductDetailAPIView,
     CategoryListCreateAPIView,
-    CategoryRetrieveUpdateDestroyAPIView, TagProductsListAPIView, TagListCreateAPIView,
-    TagRetrieveUpdateDestroyAPIView,
+    CategoryRetrieveUpdateDestroyAPIView,
+    TagProductsListAPIView,
+    TagViewSet,
 )
 
 urlpatterns = [
@@ -21,10 +23,14 @@ urlpatterns = [
     ),
     path("products/", ProductListCreateAPIView.as_view(), name="product-list-create"),
     path("products/<int:pk>/", ProductDetailAPIView.as_view(), name="product-detail"),
-
-    path("tags/<int:tag_id>/products/", TagProductsListAPIView.as_view(),
-         name="tag-products-list"),
-    path("tags/", TagListCreateAPIView.as_view(), name="tag-list-create"),
-    path("tags/<int:pk>/", TagRetrieveUpdateDestroyAPIView.as_view(),
-         name="tag-retrieve-update-destroy"),
+    path(
+        "tags/<int:tag_id>/products/",
+        TagProductsListAPIView.as_view(),
+        name="tag-products-list",
+    ),
 ]
+
+router = DefaultRouter()
+router.register(r"tags", TagViewSet, basename="tags")
+
+urlpatterns += router.urls

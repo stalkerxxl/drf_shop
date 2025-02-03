@@ -17,23 +17,15 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    # product_count = serializers.SerializerMethodField()
     product_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Tag
-        fields = [
+        fields = (
             "id",
             "name",
             "product_count",
-        ]
-
-    # # fixme заменить на ProductCountMixin
-    # def get_product_count(self, obj: Tag):
-    #     request = self.context.get("request")
-    #     if request and request.user.is_staff:
-    #         return obj.product_set.count()
-    #     return obj.product_set.filter(is_active=True).count()
+        )
 
 
 class ProductSerializer(serializers.ModelSerializer):
