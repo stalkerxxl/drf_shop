@@ -20,7 +20,7 @@ class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
 
     def get_queryset(self):
         if self.request.method == "GET":
-            return Category.objects.prefetch_related("product_set")
+            return Category.objects.prefetch_related("product_set__tags")
         return Category.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
