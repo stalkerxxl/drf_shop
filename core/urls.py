@@ -23,3 +23,4 @@ urlpatterns = [
     # path("api-auth/", include("rest_framework.urls")),
     path("api/", include("shop_api.urls")),
 ]
+urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
