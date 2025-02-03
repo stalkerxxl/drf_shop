@@ -1,19 +1,28 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.db.models.aggregates import Count
+from rest_framework import generics
 
-from shop_api.models import Tag
-from shop_api.permissions import IsAdminOrReadOnly
-from shop_api.serializers import TagSerializer
+from shop_api.models import Product, Tag
+from shop_api.paginators import ProductsPagination
+from shop_api.serializers import ProductSerializer, TagSerializer
 
 
-class TagViewSet(viewsets.ModelViewSet):
-    queryset = Tag.objects.all()
+class TagProductsListAPIView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    pagination_class = ProductsPagination
+
+    def get_queryset(self):
+        products = Product.objects.filter(
+            tags__id=self.kwargs["tag_id"]
+        ).prefetch_related("tags", "category")
+        return products
+
+
+class TagListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
-    # filter_backends = [filters.SearchFilter]
-    search_fields = ["name"]
+    # queryset = Tag.objects.prefetch_related("product_set")
+    queryset = Tag.objects.annotate(product_count=Count('product_set'))
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({"request": self.request})
-        return context
+
+class TagRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.annotate(product_count=Count('product_set'))
