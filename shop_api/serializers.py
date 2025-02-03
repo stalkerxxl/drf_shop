@@ -1,39 +1,38 @@
 from rest_framework import serializers
+from rest_framework.relations import PrimaryKeyRelatedField
 
 from shop_api.models import Category, Product, Tag
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    products_count = serializers.SerializerMethodField()
+    product_count = serializers.SerializerMethodField()
 
-    # noinspection PyUnresolvedReferences
     class Meta:
         model = Category
         fields = (
             "id",
             "name",
-            "products_count",
+            "product_count",
         )
 
+    # fixme заменить на ProductCountMixin
     @staticmethod
-    def get_products_count(obj):
-        return Product.objects.filter(category=obj).count()
+    def get_product_count(obj: Category):
+        return obj.product_set.count()
 
 
-class TagSerializer(serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
 
-    # noinspection PyUnresolvedReferences
     class Meta:
         model = Tag
         fields = [
-            "url",
             "id",
             "name",
             "product_count",
         ]
-        extra_kwargs = {"url": {"view_name": "tag-detail", "lookup_field": "pk"}}
 
+    # fixme заменить на ProductCountMixin
     def get_product_count(self, obj: Tag):
         request = self.context.get("request")
         if request and request.user.is_staff:
@@ -42,8 +41,8 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    category_name = serializers.SerializerMethodField()
-    category_id = serializers.SerializerMethodField()
+    category = PrimaryKeyRelatedField(many=False, queryset=Category.objects.all())
+    tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
 
     class Meta:
         model = Product
@@ -55,14 +54,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "in_stock",
             # "image",
             "is_active",
-            "category_id",
-            "category_name",
+            "category",
+            "tags",
         )
-
-    @staticmethod
-    def get_category_id(obj: Product):
-        return obj.category.id
-
-    @staticmethod
-    def get_category_name(obj: Product):
-        return obj.category.name

@@ -7,8 +7,8 @@ from shop_api.models import Product
 class ProductQuerysetMixin(GenericAPIView):
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Product.objects.all()
-        return Product.objects.active()
+            return Product.objects.prefetch_related("tags", "category")
+        return Product.objects.active().prefetch_related("tags", "category")
 
 
 class ProductCountMixin(serializers.Serializer):

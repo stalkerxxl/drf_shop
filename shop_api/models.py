@@ -26,8 +26,6 @@ class Category(TimestampMixin, models.Model):
 class Tag(TimestampMixin, models.Model):
     name = models.CharField(max_length=50, unique=True)
 
-    # products = models.ManyToManyField("Product", related_name="tag_set")
-
     def __str__(self):
         return self.name
 
