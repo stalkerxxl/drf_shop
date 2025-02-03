@@ -5,6 +5,7 @@ from shop_api.views import (
     ProductDetailAPIView,
     CategoryListCreateAPIView,
     CategoryRetrieveUpdateDestroyAPIView, TagProductsListAPIView, TagListCreateAPIView,
+    TagRetrieveUpdateDestroyAPIView,
 )
 
 urlpatterns = [
@@ -24,4 +25,6 @@ urlpatterns = [
     path("tags/<int:tag_id>/products/", TagProductsListAPIView.as_view(),
          name="tag-products-list"),
     path("tags/", TagListCreateAPIView.as_view(), name="tag-list-create"),
+    path("tags/<int:pk>/", TagRetrieveUpdateDestroyAPIView.as_view(),
+         name="tag-retrieve-update-destroy"),
 ]

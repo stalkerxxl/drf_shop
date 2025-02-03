@@ -3,6 +3,7 @@ from rest_framework import generics
 
 from shop_api.models import Product, Tag
 from shop_api.paginators import ProductsPagination
+from shop_api.permissions import IsAdminOrReadOnly
 from shop_api.serializers import ProductSerializer, TagSerializer
 
 
@@ -20,9 +21,11 @@ class TagProductsListAPIView(generics.ListAPIView):
 class TagListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = TagSerializer
     # queryset = Tag.objects.prefetch_related("product_set")
-    queryset = Tag.objects.annotate(product_count=Count('product_set'))
+    queryset = Tag.objects.annotate(product_count=Count("product_set"))
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class TagRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TagSerializer
-    queryset = Tag.objects.annotate(product_count=Count('product_set'))
+    queryset = Tag.objects.annotate(product_count=Count("product_set"))
+    permission_classes = [IsAdminOrReadOnly]

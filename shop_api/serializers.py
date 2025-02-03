@@ -5,7 +5,7 @@ from shop_api.models import Category, Product, Tag
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    product_count = serializers.SerializerMethodField()
+    product_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Category
@@ -15,15 +15,11 @@ class CategorySerializer(serializers.ModelSerializer):
             "product_count",
         )
 
-    # fixme заменить на ProductCountMixin
-    @staticmethod
-    def get_product_count(obj: Category):
-        return obj.product_set.count()
-
 
 class TagSerializer(serializers.ModelSerializer):
     # product_count = serializers.SerializerMethodField()
     product_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Tag
         fields = [
