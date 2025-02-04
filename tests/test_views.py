@@ -178,3 +178,113 @@ class TestCategoryViewSet:
         assert len(response.data["results"]) == ProductsPagination.page_size
         assert "next" in response.data
         assert "previous" in response.data
+
+
+@pytest.mark.django_db
+class TestProductViewSet:
+    @pytest.fixture
+    def product_data(self):
+        category = Category.objects.create(name="Test Category")
+        return {
+            "name": "New Product",
+            "category": category.id,
+            "description": "Test Description",
+            "price": 100,
+            "in_stock": 10,
+        }
+
+    @pytest.fixture
+    def client(self):
+        return APIClient()
+
+    @pytest.fixture
+    def product_with_tags(self):
+        category = Category.objects.create(name="Test Category")
+        product = Product.objects.create(
+            name="Test Product",
+            category=category,
+            description="Test Description",
+            price=100,
+            in_stock=10,
+        )
+        for i in range(5):
+            tag = Tag.objects.create(name=f"Tag {i + 1}")
+            product.tags.add(tag)
+        return product
+
+    def test_product_list(self, client, product_with_tags):
+        url = reverse("products-list")
+        response = client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        assert "results" in response.data
+        assert len(response.data["results"]) > 0
+        assert "next" in response.data
+        assert "previous" in response.data
+
+    def test_product_create_admin(self, client, admin_user, product_data):
+        client.force_authenticate(user=admin_user)
+        url = reverse("products-list")
+        response = client.post(url, product_data, format="json")
+        assert response.status_code == status.HTTP_201_CREATED
+        assert Product.objects.filter(name="New Product").exists()
+
+    def test_product_create_normal_user(self, client, normal_user, product_data):
+        client.force_authenticate(user=normal_user)
+        url = reverse("products-list")
+        response = client.post(url, product_data, format="json")
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_product_update_admin(self, client, admin_user, product_data):
+        client.force_authenticate(user=admin_user)
+        product = Product.objects.create(
+            name="Old Product",
+            category=Category.objects.create(name="Old Category"),
+            description="Old Description",
+            price=50,
+            in_stock=5,
+        )
+        url = reverse("products-detail", args=[product.id])
+        response = client.put(url, product_data, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        assert Product.objects.filter(name="New Product").exists()
+
+    def test_product_update_normal_user(self, client, normal_user, product_data):
+        client.force_authenticate(user=normal_user)
+        product = Product.objects.create(
+            name="Old Product",
+            category=Category.objects.create(name="Old Category"),
+            description="Old Description",
+            price=50,
+            in_stock=5,
+        )
+        url = reverse("products-detail", args=[product.id])
+        response = client.put(url, product_data, format="json")
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_product_delete_admin(self, client, admin_user):
+        client.force_authenticate(user=admin_user)
+        product = Product.objects.create(
+            name="Test Product",
+            category=Category.objects.create(name="Test Category"),
+            description="Test Description",
+            price=100,
+            in_stock=10,
+        )
+        url = reverse("products-detail", args=[product.id])
+        response = client.delete(url)
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert not Product.objects.filter(id=product.id).exists()
+
+    def test_product_delete_normal_user(self, client, normal_user):
+        client.force_authenticate(user=normal_user)
+        product = Product.objects.create(
+            name="Test Product",
+            category=Category.objects.create(name="Test Category"),
+            description="Test Description",
+            price=100,
+            in_stock=10,
+        )
+        url = reverse("products-detail", args=[product.id])
+        response = client.delete(url)
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert Product.objects.filter(id=product.id).exists()
