@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 
-from shop_api.models import Category, Product, Tag
+from shop_api.models import Category, Product, Tag, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -44,4 +44,20 @@ class ProductSerializer(serializers.ModelSerializer):
             "is_active",
             "category",
             "tags",
+        )
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "product",
+            "user",
+            "text",
+            "created_at",
+        )
+        read_only_fields = (
+            "user",
+            "created_at",
         )
