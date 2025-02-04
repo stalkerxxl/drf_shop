@@ -31,6 +31,7 @@ class TagSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     category = PrimaryKeyRelatedField(many=False, queryset=Category.objects.all())
     tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), required=False)
+    comments_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Product
@@ -44,6 +45,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "is_active",
             "category",
             "tags",
+            "comments_count",
         )
 
 
