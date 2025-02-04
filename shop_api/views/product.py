@@ -1,19 +1,13 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import viewsets
 
-from shop_api.mixins import ProductQuerysetMixin
+from shop_api.models import Product
 from shop_api.paginators import ProductsPagination
 from shop_api.permissions import IsAdminOrReadOnly
 from shop_api.serializers import ProductSerializer
 
 
-class ProductListCreateAPIView(ProductQuerysetMixin, ListCreateAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.prefetch_related("category", "tags")
     serializer_class = ProductSerializer
+    permission_classes = [IsAdminOrReadOnly]
     pagination_class = ProductsPagination
-
-
-class ProductDetailAPIView(ProductQuerysetMixin, RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
-    serializer_class = ProductSerializer
-    lookup_field = "pk"
