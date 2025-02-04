@@ -7,12 +7,12 @@
 ==ВЬЮХИ==
 UserViewSet
 ✅ CategoryViewSet
-✅ ProductGenericView
+✅ TagViewSet
+✅ ProductViewSet
     ✅ пагинация
     - фильтрация
     - поиск
     - сортировка
-✅ TagViewSet
 
 ==АУТЕНТИФИКАЦИЯ==
 ✅ по паролю
