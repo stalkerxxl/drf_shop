@@ -22,6 +22,7 @@ class TestTagViewSet:
                 description="Test Description",
                 price=100,
                 in_stock=10,
+                is_active=True
             )
             product.tags.add(tag)
         return tag
@@ -105,6 +106,7 @@ class TestCategoryViewSet:
                 description="Test Description",
                 price=100,
                 in_stock=10,
+                is_active=True
             )
         return category
 
@@ -193,6 +195,7 @@ class TestProductViewSet:
             description="Test Description",
             price=100,
             in_stock=10,
+            is_active=True
         )
         for i in range(5):
             tag = Tag.objects.create(name=f"Tag {i + 1}")
