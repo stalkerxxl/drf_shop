@@ -30,7 +30,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = PrimaryKeyRelatedField(many=False, queryset=Category.objects.all())
-    tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+    tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), required=False)
 
     class Meta:
         model = Product
