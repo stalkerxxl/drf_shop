@@ -44,9 +44,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         # "rest_framework.authentication.TokenAuthentication",
     ],
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    # ]
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SUPERUSER_USERNAME = env("SUPERUSER_USERNAME", cast=str)
@@ -66,6 +64,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "shop_api.apps.ShopApiConfig",
     "silk",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
