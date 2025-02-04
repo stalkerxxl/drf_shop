@@ -3,6 +3,7 @@ from django.db.models.aggregates import Count
 from rest_framework import viewsets
 from rest_framework.decorators import action
 
+from shop_api.filters import OnlyActiveProductsFilter
 from shop_api.models import Category, Product
 from shop_api.paginators import ProductsPagination
 from shop_api.permissions import IsAdminOrReadOnly
@@ -12,7 +13,7 @@ from shop_api.serializers import CategorySerializer, ProductSerializer
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.annotate(product_count=Count("product_set"))
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
 
     @action(
         detail=True,
@@ -24,6 +25,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         serializer_class=ProductSerializer,
         pagination_class=ProductsPagination,
         queryset=Product.objects.prefetch_related("tags", "category"),
+        filter_backends=(OnlyActiveProductsFilter,)
     )
     def products_list(self, request, pk=None):
         self.queryset: QuerySet[Product] = self.get_queryset().filter(category_id=pk)
