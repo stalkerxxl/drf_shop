@@ -5,7 +5,6 @@ from shop_api.views import (
     CategoryViewSet,
     ProductViewSet,
     CommentViewSet,
-    OrderViewSet,
 )
 
 urlpatterns = []
@@ -14,5 +13,5 @@ router.register(r"tags", TagViewSet, basename="tags")
 router.register(r"categories", CategoryViewSet, basename="categories")
 router.register(r"products", ProductViewSet, basename="products")
 router.register(r"comments", CommentViewSet, basename="comments")
-router.register(r"orders", OrderViewSet, basename="orders")
+# router.register(r"orders", OrderViewSet, basename="orders")
 urlpatterns += router.urls
