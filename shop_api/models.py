@@ -73,35 +73,58 @@ class Comment(TimestampMixin, models.Model):
         return f"{self.user.username} - {self.product.name}: {self.text[:50]}"
 
 
-class Order(TimestampMixin, models.Model):
-    class Status(models.TextChoices):
-        CREATED = "created"
-        PAID = "paid"
-        SHIPPED = "shipped"
-        DELIVERED = "delivered"
-        CANCELED = "canceled"
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
-    products = models.ManyToManyField(Product, through="OrderItem")
-    status = models.CharField(max_length=20, choices=Status, default=Status.CREATED)
+class Basket(TimestampMixin, models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="basket")
+    items = models.ManyToManyField(Product, through="BasketItem")
 
     def __str__(self):
-        return f"{self.user.username} - Order {self.id}: {self.status}"
+        return f"{self.user.username} - Basket {self.id}"
 
 
-class OrderItem(TimestampMixin, models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+class BasketItem(TimestampMixin, models.Model):
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    sum = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
     class Meta:
-        unique_together = ["order", "product"]
+        unique_together = ["basket", "product"]
 
-    def save(self, *args, **kwargs):
-        self.sum = self.price * self.quantity
-        super().save(*args, **kwargs)
+    @property
+    def sum(self):
+        return self.product.price * self.quantity
 
     def __str__(self):
-        return f"{self.order.id}: {self.product.name}, {self.price} * {self.quantity} products"
+        return f"{self.basket.id}: {self.product.name} * {self.quantity} products"
+
+# class Order(TimestampMixin, models.Model):
+#     class Status(models.TextChoices):
+#         CREATED = "created"
+#         PAID = "paid"
+#         SHIPPED = "shipped"
+#         DELIVERED = "delivered"
+#         CANCELED = "canceled"
+#
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+#     products = models.ManyToManyField(Product, through="OrderItem")
+#     status = models.CharField(max_length=20, choices=Status, default=Status.CREATED)
+#
+#     def __str__(self):
+#         return f"{self.user.username} - Order {self.id}: {self.status}"
+#
+#
+# class OrderItem(TimestampMixin, models.Model):
+#     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     price = models.DecimalField(max_digits=10, decimal_places=2)
+#     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+#     sum = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+#
+#     class Meta:
+#         unique_together = ["order", "product"]
+#
+#     def save(self, *args, **kwargs):
+#         self.sum = self.price * self.quantity
+#         super().save(*args, **kwargs)
+#
+#     def __str__(self):
+#         return f"{self.order.id}: {self.product.name}, {self.price} * {self.quantity} products"
