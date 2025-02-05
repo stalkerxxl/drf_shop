@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from shop_api.models import Category, Product, Tag
+from shop_api.models import Category, Product, Tag, Comment
 from shop_api.paginators import ProductsPagination
 
 
@@ -22,7 +22,7 @@ class TestTagViewSet:
                 description="Test Description",
                 price=100,
                 in_stock=10,
-                is_active=True
+                is_active=True,
             )
             product.tags.add(tag)
         return tag
@@ -106,7 +106,7 @@ class TestCategoryViewSet:
                 description="Test Description",
                 price=100,
                 in_stock=10,
-                is_active=True
+                is_active=True,
             )
         return category
 
@@ -195,7 +195,7 @@ class TestProductViewSet:
             description="Test Description",
             price=100,
             in_stock=10,
-            is_active=True
+            is_active=True,
         )
         for i in range(5):
             tag = Tag.objects.create(name=f"Tag {i + 1}")
@@ -278,3 +278,80 @@ class TestProductViewSet:
         response = api_client.delete(url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
         assert Product.objects.filter(id=product.id).exists()
+
+
+@pytest.mark.django_db
+class TestCommentViewSet:
+    @pytest.fixture
+    def comment_data(self):
+        category = Category.objects.create(name="Test Category")
+        product = Product.objects.create(
+            name="Test Product",
+            category=category,
+            description="Test Description",
+            price=100,
+            in_stock=10,
+        )
+        return {
+            "product": product.id,
+            "text": "Test Comment",
+        }
+
+    @pytest.fixture
+    def comment(self, admin_user):
+        category = Category.objects.create(name="Test Category")
+        product = Product.objects.create(
+            name="Test Product",
+            category=category,
+            description="Test Description",
+            price=100,
+            in_stock=10,
+        )
+        return Comment.objects.create(
+            user=admin_user,
+            product=product,
+            text="Test Comment",
+        )
+
+    def test_comment_list(self, api_client, comment):
+        url = reverse("comments-list")
+        response = api_client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        assert "results" in response.data
+        assert len(response.data["results"]) > 0
+        assert "next" in response.data
+        assert "previous" in response.data
+
+    def test_comment_create(self, api_client, admin_user, comment_data):
+        api_client.force_authenticate(user=admin_user)
+        url = reverse("comments-list")
+        response = api_client.post(url, comment_data, format="json")
+        assert response.status_code == status.HTTP_201_CREATED
+        assert Comment.objects.filter(text="Test Comment").exists()
+
+    def test_comment_update_author(self, api_client, admin_user, comment):
+        api_client.force_authenticate(user=admin_user)
+        url = reverse("comments-detail", args=[comment.id])
+        response = api_client.patch(url, {"text": "Updated Comment"}, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        assert Comment.objects.filter(text="Updated Comment").exists()
+
+    def test_comment_update_non_author(self, api_client, normal_user, comment):
+        api_client.force_authenticate(user=normal_user)
+        url = reverse("comments-detail", args=[comment.id])
+        response = api_client.patch(url, {"text": "Updated Comment"}, format="json")
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_comment_delete_author(self, api_client, admin_user, comment):
+        api_client.force_authenticate(user=admin_user)
+        url = reverse("comments-detail", args=[comment.id])
+        response = api_client.delete(url)
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert not Comment.objects.filter(id=comment.id).exists()
+
+    def test_comment_delete_non_author(self, api_client, normal_user, comment):
+        api_client.force_authenticate(user=normal_user)
+        url = reverse("comments-detail", args=[comment.id])
+        response = api_client.delete(url)
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert Comment.objects.filter(id=comment.id).exists()
