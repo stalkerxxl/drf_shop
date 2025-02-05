@@ -104,4 +104,4 @@ class OrderItem(TimestampMixin, models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.order.id}: {self.product.name}, {self.price} * {self.quantity} items"
+        return f"{self.order.id}: {self.product.name}, {self.price} * {self.quantity} products"
