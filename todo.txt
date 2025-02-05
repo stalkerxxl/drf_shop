@@ -3,6 +3,7 @@
 ✅ Category
 ✅ Product
 ✅ Tag
+✅ Comment
 
 ==ВЬЮХИ==
 UserViewSet
@@ -14,6 +15,7 @@ UserViewSet
     ✅поиск
     ✅сортировка
     ✅глобальный фильтр (по уровню доступа)
+✅ CommentViewSet
 
 ==АУТЕНТИФИКАЦИЯ==
 ✅ по паролю
@@ -24,6 +26,7 @@ User
 ✅ Category
 ✅ Product
 ✅ Tag
+✅ Comment
 
 ==SWAGGER==
 -User
