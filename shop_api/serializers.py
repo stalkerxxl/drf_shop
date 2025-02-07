@@ -71,9 +71,6 @@ class BasketItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = BasketItem
         fields = ["product", "quantity", "sum"]
-        # fields = ['product']
-        # read_only_fields = ["product"]
-
     # @staticmethod
     # def get_product(obj: BasketItem):
     #     return {
