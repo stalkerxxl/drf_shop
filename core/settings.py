@@ -42,7 +42,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        # "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "shop_api.apps.ShopApiConfig",
     "silk",
     "django_filters",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [

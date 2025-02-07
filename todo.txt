@@ -61,6 +61,16 @@ ProductTag (m2m)
 -product
 -tag
 
+Basket
+user
+items (m2m with through=BasketItem)
+
+BasketItem
+product
+quantity
+price
+sum
+
 Order
 -user
 -status

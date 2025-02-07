@@ -1,6 +1,7 @@
 import random
 
 from django.core.management.base import BaseCommand
+from faker import Faker
 
 from core.settings import SUPERUSER_EMAIL, SUPERUSER_USERNAME, SUPERUSER_PASSWORD
 from shop_api.models import Category, Product, Tag, User
@@ -26,8 +27,9 @@ class Command(BaseCommand):
         """
         Main entry point for the command. Clears the database and populates it with fake data.
         """
-        self.create_superuser()
         self.clear_database()
+        self.create_superuser()
+        self.add_random_users()
         self.create_categories()
         self.create_tags()
         self.create_products()
@@ -89,10 +91,26 @@ class Command(BaseCommand):
             )
 
     @staticmethod
+    def add_random_users():
+        fake = Faker()
+        users = []
+        for _ in range(2):
+            user = User.objects.create_user(
+                username=fake.user_name(),
+                email=fake.email(),
+                password=fake.password(),
+                is_staff=False,
+                is_superuser=False
+            )
+            users.append(user)
+        return users
+
+    @staticmethod
     def clear_database():
         """
         Clear the database by deleting all products, categories, and tags.
         """
+        User.objects.all().delete()
         Product.objects.all().delete()
         Category.objects.all().delete()
         Tag.objects.all().delete()
