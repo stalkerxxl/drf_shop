@@ -6,7 +6,11 @@ from shop_api.serializers import BasketSerializer
 
 
 class BasketViewSet(viewsets.ModelViewSet):
-    queryset = Basket.objects.all()  # fixme оптимизировать
+    queryset = Basket.objects.prefetch_related(
+        "basketitem_set__product",
+        "basketitem_set__product__tags",
+        "basketitem_set__product__category",
+    )
     serializer_class = BasketSerializer
     permission_classes = [IsAuthenticated]
 

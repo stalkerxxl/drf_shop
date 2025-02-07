@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 
 from shop_api.models import Category, Product, Tag, Comment, BasketItem, Basket
@@ -67,33 +66,48 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class BasketItemSerializer(serializers.ModelSerializer):
-    product = SerializerMethodField()
-
-    # product = ProductSerializer()
+    # product = SerializerMethodField()
+    product = ProductSerializer()
     class Meta:
         model = BasketItem
         fields = ["product", "quantity", "sum"]
         # fields = ['product']
         # read_only_fields = ["product"]
 
-    @staticmethod
-    def get_product(obj: BasketItem):
-        return {
-            "id": obj.product.id,
-            "name": obj.product.name,
-            "price": obj.product.price,
-            "sum": obj.sum,
-            "qqq": obj.product.price * obj.quantity,
-        }
+    # @staticmethod
+    # def get_product(obj: BasketItem):
+    #     return {
+    #         "id": obj.product.id,
+    #         "name": obj.product.name,
+    #         "price": obj.product.price,
+    #         "category_name": obj.product.category.name
+    #     }
 
 
 class BasketSerializer(serializers.ModelSerializer):
     items = BasketItemSerializer(many=True, source="basketitem_set")
+    total_sum = serializers.SerializerMethodField()
 
     class Meta:
         model = Basket
-        fields = ["id", "items", "user", "created_at", "updated_at"]
-        read_only_fields = ("id", "items", "user", "created_at", "updated_at")
+        fields = ["id", "items", "user", "created_at", "updated_at", "total_sum"]
+        read_only_fields = (
+            "id",
+            "items",
+            "user",
+            "created_at",
+            "updated_at",
+            "total_sum",
+        )
+
+    @staticmethod
+    def get_total_sum(obj: Basket):
+        total_sum = (
+                sum(item.product.price * item.quantity for item in
+                    obj.basketitem_set.all())
+                or 0
+        )
+        return total_sum
 
     def create(self, validated_data):
         items_data = validated_data.pop("items")
