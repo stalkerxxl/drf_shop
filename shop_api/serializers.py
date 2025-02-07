@@ -72,7 +72,7 @@ class BasketItemSerializer(serializers.ModelSerializer):
     # product = ProductSerializer()
     class Meta:
         model = BasketItem
-        fields = ['product', 'quantity', 'sum']
+        fields = ["product", "quantity", "sum"]
         # fields = ['product']
         # read_only_fields = ["product"]
 
@@ -83,12 +83,12 @@ class BasketItemSerializer(serializers.ModelSerializer):
             "name": obj.product.name,
             "price": obj.product.price,
             "sum": obj.sum,
-            "qqq": obj.product.price * obj.quantity
+            "qqq": obj.product.price * obj.quantity,
         }
 
 
 class BasketSerializer(serializers.ModelSerializer):
-    items = BasketItemSerializer(many=True, source='basketitem_set')
+    items = BasketItemSerializer(many=True, source="basketitem_set")
 
     class Meta:
         model = Basket
@@ -112,6 +112,7 @@ class BasketSerializer(serializers.ModelSerializer):
                 BasketItem.objects.create(basket=instance, **item_data)
 
         return instance
+
 
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     class Meta:
